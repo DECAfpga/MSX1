@@ -219,8 +219,8 @@ architecture behavior of msx_deca is
 	signal extra_keys_s		: std_logic_vector( 3 downto 0);
 	signal keyb_valid_s		: std_logic;
 	signal keyb_data_s		: std_logic_vector( 7 downto 0);
-	signal keymap_addr_s		: std_logic_vector( 8 downto 0);
-	signal keymap_data_s		: std_logic_vector( 7 downto 0);
+	signal keymap_addr_s	: std_logic_vector( 8 downto 0);
+	signal keymap_data_s	: std_logic_vector( 7 downto 0);
 	signal keymap_we_s		: std_logic;
 
 	-- Joystick
@@ -649,8 +649,8 @@ begin
 	-- Glue logic
 
 	-- Resets
-	btn_por_n_s		<= btn_n_i(2) or btn_n_i(4);
-	btn_reset_n_s	<= btn_n_i(1) or btn_n_i(4);
+	btn_por_n_s		<= btn_n_i(2); -- or btn_n_i(4);
+	btn_reset_n_s	<= btn_n_i(1); -- or btn_n_i(4);
 
 	por_s		<= '1'	when pll_locked_s = '0' or soft_por_s = '1' or btn_por_n_s = '0'		else '0';
 	reset_s		<= '1'	when soft_rst_cnt_s = X"01"                 or btn_reset_n_s = '0'		else '0';
@@ -828,8 +828,8 @@ begin
 	vga_r_o			<= vga_r_s(3 downto 1);
 	vga_g_o			<= vga_g_s(3 downto 1);
 	vga_b_o			<= vga_b_s(3 downto 1);
-	vga_hsync_n_o			<= vga_hsync_n_s;
-	vga_vsync_n_o			<= vga_vsync_n_s;
+	vga_hsync_n_o	<= vga_hsync_n_s;
+	vga_vsync_n_o	<= vga_vsync_n_s;
 
 	-- Peripheral BUS control
 	bus_data_from_s	<= jt51_data_from_s	when jt51_hd_s = '1'	else

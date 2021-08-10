@@ -96,7 +96,7 @@ set_location_assignment PIN_AB21 -to sdram_da_io[2]
 set_location_assignment PIN_AA19 -to sdram_da_io[1]
 set_location_assignment PIN_AA20 -to sdram_da_io[0]
 
-#not used in Mister 32 MB module
+#DQMH/L not used in Mister 32 MB module
 set_location_assignment PIN_W13 -to sdram_dqm_o[1]
 set_location_assignment PIN_Y11 -to sdram_dqm_o[0]
 
@@ -106,7 +106,6 @@ set_location_assignment PIN_AA14 -to sdram_clk_o
 set_location_assignment PIN_V12 -to sdram_cs_o
 set_location_assignment PIN_W11 -to sdram_ras_o
 set_location_assignment PIN_AB10 -to sdram_we_o
-
 
 set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to sdram_da_io[0]
 set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to sdram_da_io[1]
@@ -177,21 +176,15 @@ set_instance_assignment -name FAST_INPUT_REGISTER ON -to sdram_da_io[15]
 
 
 # Video
-#set_location_assignment PIN_N12 -to vga_r_o[4]
-#set_location_assignment PIN_L15 -to vga_r_o[3]
-set_location_assignment PIN_AB6 -to vga_r_o[2]
-set_location_assignment PIN_AA6 -to vga_r_o[1]
-set_location_assignment PIN_V10 -to vga_r_o[0]
-#set_location_assignment PIN_L14 -to vga_g_o[4]
-#set_location_assignment PIN_E10 -to vga_g_o[3]
-set_location_assignment PIN_AB8 -to vga_g_o[2]
-set_location_assignment PIN_AB7 -to vga_g_o[1]
-set_location_assignment PIN_R11 -to vga_g_o[0]
-#set_location_assignment PIN_F13 -to vga_b_o[4]
-#set_location_assignment PIN_T11 -to vga_b_o[3]
-set_location_assignment PIN_AA7 -to vga_b_o[2]
-set_location_assignment PIN_Y7 -to vga_b_o[1]
-set_location_assignment PIN_U7 -to vga_b_o[0]
+set_location_assignment PIN_AA7 -to vga_r_o[2]
+set_location_assignment PIN_Y7 -to vga_r_o[1]
+set_location_assignment PIN_U7 -to vga_r_o[0]
+set_location_assignment PIN_V7 -to vga_g_o[2]
+set_location_assignment PIN_R11 -to vga_g_o[1]
+set_location_assignment PIN_AB7 -to vga_g_o[0]
+set_location_assignment PIN_AB6 -to vga_b_o[2]
+set_location_assignment PIN_AA6 -to vga_b_o[1]
+set_location_assignment PIN_V10 -to vga_b_o[0]
 set_location_assignment PIN_W7 -to vga_hsync_n_o
 set_location_assignment PIN_W6 -to vga_vsync_n_o
 
@@ -221,10 +214,9 @@ set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ps2_mouse_data_io
 #set_location_assignment PIN_L1 -to joy2_p9_i
 
 # Audio (GPIO1_D18/19)
+set_location_assignment PIN_H4 -to ear_i
 set_location_assignment PIN_R9 -to dac_l_o
 set_location_assignment PIN_W4 -to dac_r_o
-set_location_assignment PIN_Y19 -to mic_o
-set_location_assignment PIN_AA17 -to ear_i
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to dac_l_o
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to dac_r_o
 
@@ -261,7 +253,6 @@ set_location_assignment PIN_P13 -to SD_SEL
 #####
 
 set_global_assignment -name VHDL_FILE msx_deca.vhd
-#set_global_assignment -name VHDL_FILE "../../src/syn-deca/deca_top.vhd"
 set_global_assignment -name VHDL_FILE "../../src/syn-deca/pll1.vhd"
 set_global_assignment -name VHDL_FILE "../../src/syn-deca/pll2.vhd"
 set_global_assignment -name VHDL_FILE ../../src/msx_pack.vhd
@@ -357,23 +348,15 @@ set_global_assignment -name VHDL_FILE ../../src/audio/vm2413/envelopegenerator.v
 set_global_assignment -name VHDL_FILE ../../src/audio/vm2413/controller.vhd
 set_global_assignment -name VHDL_FILE ../../src/audio/vm2413/AttackTableMul.vhd
 set_global_assignment -name VHDL_FILE ../../src/audio/vm2413/attacktable.vhd
-#set_global_assignment -name VHDL_FILE ../../src/peripheral/i8251/UART.vhd
-#set_global_assignment -name VHDL_FILE ../../src/peripheral/i8251/clk_divider.vhd
-#set_global_assignment -name VHDL_FILE ../../src/peripheral/i8251/UART_transmitter.vhd
-#set_global_assignment -name VHDL_FILE ../../src/peripheral/i8251/UART_Receiver.vhd
-#set_global_assignment -name VHDL_FILE ../../src/peripheral/i8253/timer.vhd
 
-#set_global_assignment -name VHDL_FILE ../../src/ram/ssdram256Mb.vhd
-#set_global_assignment -name VHDL_FILE ../../src/ram/ssdram256Mbmod.vhd
 set_global_assignment -name SYSTEMVERILOG_FILE ../../src/ram/sdram_nes.sv
-#set_global_assignment -name SYSTEMVERILOG_FILE ../../src/ram/sdram_mist.sv
-
 
 ######
 
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+
 
 
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

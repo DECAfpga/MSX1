@@ -54,12 +54,6 @@ entity msx_deca is
 		-- Buttons
 		btn_n_i				: in    std_logic_vector(4 downto 1);
 
-		--SRAM (AS7C34096)
-		--sram_addr_o			: out   std_logic_vector(18 downto 0)	:= (others => '0');
-		--sram_data_io			: inout std_logic_vector( 7 downto 0)	:= (others => 'Z');
-		--sram_we_n_o			: out   std_logic								:= '1';
-		--sram_oe_n_o			: out   std_logic								:= '1';
-
 		-- SDRAM	(32MB)
 		sdram_clk_o			: out   std_logic								:= '0';
 		sdram_cke_o			: out   std_logic								:= '0';
@@ -71,7 +65,6 @@ entity msx_deca is
 		sdram_cas_o			: out   std_logic								:= '1';
 		sdram_cs_o			: out   std_logic								:= '1';
 		sdram_we_o			: out   std_logic								:= '1';
-		--sdram_ready			: out   std_logic								:= '0'; --sdram mister
 
 		-- PS2
 		ps2_clk_io			: inout std_logic								:= 'Z';
@@ -88,25 +81,25 @@ entity msx_deca is
 		SD_CMD_DIR 			: out   std_logic								:= '1';  
 		SD_D0_DIR 			: out   std_logic								:= '0';  
 		SD_D123_DIR 		: out   std_logic								:= '1'; 
-					
+	
 		-- Joysticks
 		joy1_up_i			: in    std_logic 	:= 'Z';
-		joy1_down_i			: in    std_logic 	:= 'Z';
-		joy1_left_i			: in    std_logic 	:= 'Z';
-		joy1_right_i			: in    std_logic 	:= 'Z';
-		joy1_p6_i			: in    std_logic 	:= 'Z';
-		joy1_p9_i			: in    std_logic 	:= 'Z';
-		joy2_up_i			: in    std_logic 	:= 'Z';
-		joy2_down_i			: in    std_logic 	:= 'Z';
-		joy2_left_i			: in    std_logic 	:= 'Z';
-		joy2_right_i			: in    std_logic 	:= 'Z';
-		joy2_p6_i			: in    std_logic 	:= 'Z';
-		joy2_p9_i			: in    std_logic 	:= 'Z';
-		joyX_p7_o			: out   std_logic 	:= 'Z';								
+		joy1_down_i			: in    std_logic  	:= 'Z';
+		joy1_left_i			: in    std_logic  	:= 'Z';
+		joy1_right_i		: in    std_logic  	:= 'Z';
+		joy1_p6_i			: in    std_logic  	:= 'Z';
+		joy1_p9_i			: in    std_logic  	:= 'Z';
+		joy2_up_i			: in    std_logic  	:= 'Z';
+		joy2_down_i			: in    std_logic  	:= 'Z';
+		joy2_left_i			: in    std_logic  	:= 'Z';
+		joy2_right_i		: in    std_logic  	:= 'Z';
+		joy2_p6_i			: in    std_logic  	:= 'Z';
+		joy2_p9_i			: in    std_logic  	:= 'Z';
+		joyX_p7_o			: out   std_logic 	:= 'Z';		
 
 		-- Audio
-		dac_l_o			: out   std_logic								:= '0';
-		dac_r_o			: out   std_logic								:= '0';
+		dac_l_o				: out   std_logic								:= '0';
+		dac_r_o				: out   std_logic								:= '0';
 		ear_i				: in    std_logic;
 		mic_o				: out   std_logic								:= '0';
 
@@ -114,23 +107,10 @@ entity msx_deca is
 		vga_r_o			: out   std_logic_vector(2 downto 0)	:= (others => '0');
 		vga_g_o			: out   std_logic_vector(2 downto 0)	:= (others => '0');
 		vga_b_o			: out   std_logic_vector(2 downto 0)	:= (others => '0');
-		vga_hsync_n_o			: out   std_logic								:= '1';
-		vga_vsync_n_o			: out   std_logic								:= '1'
+		vga_hsync_n_o	: out   std_logic								:= '1';
+		vga_vsync_n_o	: out   std_logic								:= '1'
 
-		-- HDMI
-		--tmds_o			: out   std_logic_vector(7 downto 0)	:= (others => '0');
 
-		--STM32
-		--stm_rx_o			: out   std_logic		:= 'Z'; -- stm RX pin, so, is OUT on the slave
-		--stm_tx_i			: in    std_logic		:= 'Z'; -- stm TX pin, so, is IN on the slave
-		--stm_rst_o			: out   std_logic		:= '0'; -- '0' to hold the microcontroller reset line, to free the SD card
-		--stm_a15_io			: inout std_logic;
-		--stm_b8_io			: inout std_logic		:= 'Z';
-		--stm_b9_io			: inout std_logic		:= 'Z';
-		--stm_b12_io			: inout std_logic		:= 'Z';
-		--stm_b13_io			: inout std_logic		:= 'Z';
-		--stm_b14_io			: inout std_logic		:= 'Z';
-		--stm_b15_io			: inout std_logic		:= 'Z'
 	);
 end entity;
 
@@ -159,8 +139,6 @@ architecture behavior of msx_deca is
 	signal clock_3m_s		: std_logic;
 	signal turbo_on_s		: std_logic;
 	signal clock_vga_s		: std_logic;
-	signal clock_dvi_s		: std_logic;
-	signal clock_vga2x_s		: std_logic;
 
 	-- RAM
 	signal ram_addr_s		: std_logic_vector(22 downto 0);		-- 8MB
@@ -188,6 +166,10 @@ architecture behavior of msx_deca is
 	signal audio_r_amp_s		: unsigned(15 downto 0);
 	signal volumes_s		: volumes_t;
 
+	-- sound_hdmi
+	signal sound_hdmi_l_s	: std_logic_vector(15 downto 0);
+	signal sound_hdmi_r_s	: std_logic_vector(15 downto 0);
+
 	-- Video
 	signal rgb_col_s		: std_logic_vector( 3 downto 0);
 --	signal rgb_hsync_n_s		: std_logic;
@@ -203,14 +185,6 @@ architecture behavior of msx_deca is
 	signal vga_b_s			: std_logic_vector( 3 downto 0);
 	signal scanlines_en_s		: std_logic;
 	signal odd_line_s		: std_logic;
-	
-	--signal sound_hdmi_l_s	: std_logic_vector(15 downto 0);
-	--signal sound_hdmi_r_s	: std_logic_vector(15 downto 0);
-	--signal tdms_r_s		: std_logic_vector( 9 downto 0);
-	--signal tdms_g_s		: std_logic_vector( 9 downto 0);
-	--signal tdms_b_s		: std_logic_vector( 9 downto 0);
-	--signal tdms_p_s		: std_logic_vector( 3 downto 0);
-	--signal tdms_n_s		: std_logic_vector( 3 downto 0);
 
 	-- Keyboard
 	signal rows_s			: std_logic_vector( 3 downto 0);
@@ -254,34 +228,6 @@ architecture behavior of msx_deca is
 	signal opll_ro_s		: signed(12 downto 0)			:= (others => '0');
 
 
--- sdram_mist.v   https://github.com/RW-FPGA-devel-Team/MSX1FPGA_SiDi/blob/master/rtl/ram/Sdram-Mister.sv
-	-- component sdram
-	-- 	port (
-	-- 	init : in std_logic;
-	-- 	clk : in std_logic;
-
-	-- 	SDRAM_DQ : inout std_logic_vector (15 downto 0);
-	-- 	SDRAM_A : out std_logic_vector (12 downto 0);
-	-- 	SDRAM_DQML : out std_logic;
-	-- 	SDRAM_DQMH : out std_logic;
-	-- 	SDRAM_BA : out std_logic_vector (1 downto 0);
-	-- 	SDRAM_nCS : out std_logic;
-	-- 	SDRAM_nWE : out std_logic;
-	-- 	SDRAM_nRAS : out std_logic;
-	-- 	SDRAM_nCAS : out std_logic;
-	-- 	SDRAM_CKE : out std_logic;
-	-- 	SDRAM_CLK : out std_logic;
-	-- 	-- Static RAM bus
-	-- 	addr : in std_logic_vector (24 downto 0);
-	-- 	dout : out std_logic_vector (7 downto 0);
-	-- 	din : in std_logic_vector (7 downto 0);
-	-- 	we : in std_logic;
-	-- 	rd : in std_logic;
-	-- 	ready : buffer std_logic
-	-- );
-	-- end component;
-
-
 -- FOR sdram_nes.v  NES from Mister port, https://github.com/MiSTer-devel/NES_MiSTer/blob/88b8ec80f7d848c2ea99c224698682a6bbae273b/rtl/sdram.sv
 --
 component sdram
@@ -322,8 +268,8 @@ begin
 	pll: entity work.pll1
 	port map (
 		inclk0	=> clock_50_i,
-		c0			=> clock_master_s,		-- 21.477 MHz					[21.484]
-		c1			=> clock_sdram_s,			-- 85.908 MHz (4x master)	[85.937]
+		c0			=> clock_master_s,		-- 21.477 MHz				[21.484]
+		c1			=> clock_sdram_s,		-- 85.908 MHz (4x master)	[85.937]
 		--c2			=> sdram_clk_o,			-- 85.908 MHz -90°
 		locked	=> pll_locked_s
 	);
@@ -332,8 +278,8 @@ begin
 	pll2: entity work.pll2
 	port map (
 		inclk0	=> clock_50_i,
-		c0			=> clock_vga_s,			--  25.200
-		c1			=> clock_dvi_s				-- 126.000
+		c0			=> clock_vga_s			--  25.200
+		--c1		=> clock_dvi_s			-- 126.000
 	);
 
 	-- Clocks
@@ -361,15 +307,15 @@ begin
 	)
 	port map (
 		-- Clocks
-		clock_i		=> clock_master_s,
+		clock_i			=> clock_master_s,
 		clock_vdp_i		=> clock_vdp_s,
 		clock_cpu_i		=> clock_cpu_s,
 		clock_psg_en_i	=> clock_psg_en_s,
 		-- Turbo
-		turbo_on_k_i		=> extra_keys_s(3),	-- F11
+		turbo_on_k_i	=> extra_keys_s(3),	-- F11
 		turbo_on_o		=> turbo_on_s,
 		-- Resets
-		reset_i		=> reset_s,
+		reset_i			=> reset_s,
 		por_i			=> por_s,
 		softreset_o		=> soft_reset_s_s,
 		-- Options
@@ -428,24 +374,44 @@ begin
 		k7_audio_o		=> mic_o,
 		k7_audio_i		=> ear_i,
 		-- Joystick
-		joy1_up_i		=> joy1_up_i,
-		joy1_down_i		=> joy1_down_i,
-		joy1_left_i		=> joy1_left_i,
-		joy1_right_i		=> joy1_right_i,
-		joy1_btn1_i		=> joy1_p6_i,
+		joy1_up_i		=> '1',
+		joy1_down_i		=> '1',
+		joy1_left_i		=> '1',
+		joy1_right_i	=> '1',
+		joy1_btn1_i		=> '1',
 		joy1_btn1_o		=> open,
-		joy1_btn2_i		=> joy1_p9_i,
+		joy1_btn2_i		=> '1',
 		joy1_btn2_o		=> open,
 		joy1_out_o		=> joy1_out_s,
-		joy2_up_i		=> joy2_up_i,
-		joy2_down_i		=> joy2_down_i,
-		joy2_left_i		=> joy2_left_i,
-		joy2_right_i		=> joy2_right_i,
-		joy2_btn1_i		=> joy2_p6_i,
+		joy2_up_i		=> '1',
+		joy2_down_i		=> '1',
+		joy2_left_i		=> '1',
+		joy2_right_i	=> '1',
+		joy2_btn1_i		=> '1',
 		joy2_btn1_o		=> open,
-		joy2_btn2_i		=> joy2_p9_i,
+		joy2_btn2_i		=> '1',
 		joy2_btn2_o		=> open,
 		joy2_out_o		=> joy2_out_s,
+
+		-- joy1_up_i		=> joy1_up_i,
+		-- joy1_down_i		=> joy1_down_i,
+		-- joy1_left_i		=> joy1_left_i,
+		-- joy1_right_i	=> joy1_right_i,
+		-- joy1_btn1_i		=> joy1_p6_i,
+		-- joy1_btn1_o		=> open,
+		-- joy1_btn2_i		=> joy1_p9_i,
+		-- joy1_btn2_o		=> open,
+		-- joy1_out_o		=> joy1_out_s,
+		-- joy2_up_i		=> joy2_up_i,
+		-- joy2_down_i		=> joy2_down_i,
+		-- joy2_left_i		=> joy2_left_i,
+		-- joy2_right_i	=> joy2_right_i,
+		-- joy2_btn1_i		=> joy2_p6_i,
+		-- joy2_btn1_o		=> open,
+		-- joy2_btn2_i		=> joy2_p9_i,
+		-- joy2_btn2_o		=> open,
+		-- joy2_out_o		=> joy2_out_s,
+
 		-- Video
 		cnt_hor_o		=> cnt_hor_s,
 		cnt_ver_o		=> cnt_ver_s,
@@ -475,69 +441,8 @@ begin
 	--joy2_p7_o <= not joy2_out_s;	-- for Sega Genesis joypad
 
 	-- RAM
-	
-
-	-- ORIGINAL RAM ENTITY
-	--
-	-- ram: entity work.ssdram256Mb
-	-- generic map (
-	-- 	freq_g		=> 85
-	-- )
-	-- port map (
-	-- 	clock_i	=> clock_sdram_s,
-	-- 	reset_i	=> reset_s,		        --
-	-- 	refresh_i	=> '1',
-	-- 	-- Static RAM bus
-	-- 	addr_i		=> "00" & ram_addr_s,
-	-- 	data_i		=> ram_data_to_s,
-	-- 	data_o		=> ram_data_from_s,
-	-- 	cs_i		=> ram_ce_s,		--
-	-- 	oe_i		=> ram_oe_s,		--
-	-- 	we_i		=> ram_we_s,
-	-- 	-- SD-RAM ports
-	-- 	mem_cke_o	=> sdram_cke_o,
-	-- 	mem_cs_n_o	=> sdram_cs_o,
-	-- 	mem_ras_n_o	=> sdram_ras_o,
-	-- 	mem_cas_n_o	=> sdram_cas_o,
-	-- 	mem_we_n_o	=> sdram_we_o,
-	-- 	mem_udq_o	=> sdram_dqm_o(1),
-	-- 	mem_ldq_o	=> sdram_dqm_o(0),
-	-- 	mem_ba_o	=> sdram_ba_o,
-	-- 	mem_addr_o	=> sdram_ad_o,
-	-- 	mem_data_io	=> sdram_da_io
-	-- );
-
-
-	-- For sdram_mist.v   https://github.com/RW-FPGA-devel-Team/MSX1FPGA_SiDi/blob/master/rtl/ram/Sdram-Mister.sv
-	--
-	-- sdramMister_inst : sdram
-	-- port map (
-	-- 	init => reset_s,
-	-- 	clk => clock_sdram_s,
-	-- 	-- SD-RAM ports
-	-- 	SDRAM_DQ => sdram_da_io,
-	-- 	SDRAM_A => sdram_ad_o,
-	-- 	SDRAM_DQML => sdram_dqm_o(0),
-	-- 	SDRAM_DQMH => sdram_dqm_o(1),
-	-- 	SDRAM_BA => sdram_ba_o,
-	-- 	SDRAM_nCS => sdram_cs_o,
-	-- 	SDRAM_nWE => sdram_we_o,
-	-- 	SDRAM_nRAS => sdram_ras_o,
-	-- 	SDRAM_nCAS => sdram_cas_o,
-	-- 	SDRAM_CKE => sdram_cke_o,
-	-- 	SDRAM_CLK => sdram_clk_o,
-	-- 	-- Static RAM bus
-	-- 	addr => "00" & ram_addr_s,
-	-- 	dout => ram_data_from_s,
-	-- 	din => ram_data_to_s,
-	-- 	we => ram_we_s and ram_ce_s, 	-- There's no Cs signal on sdramMister so...
-	-- 	rd => ram_oe_s and ram_ce_s, 	-- There's no Cs signal on sdramMister so...
-	-- 	ready => sdram_ready			-- sdramMister
-	-- );
-
     -- FOR sdram_nes.v  from Mister port, https://github.com/MiSTer-devel/NES_MiSTer/blob/88b8ec80f7d848c2ea99c224698682a6bbae273b/rtl/sdram.sv
 	--
-	--acess_v	<= ram_ce_s and (ram_oe_s or ram_we_s);
 	sdram_cke_o <= '1';
 	sdram_inst : sdram
 	port map (
@@ -775,54 +680,9 @@ begin
 	end process;
 
 
-	--sound_hdmi_l_s <= '0' & std_logic_vector(audio_l_amp_s(15 downto 1));
-	--sound_hdmi_r_s <= '0' & std_logic_vector(audio_r_amp_s(15 downto 1));
+	sound_hdmi_l_s <= '0' & std_logic_vector(audio_l_amp_s(15 downto 1));
+	sound_hdmi_r_s <= '0' & std_logic_vector(audio_r_amp_s(15 downto 1));
 
-	-- HDMI
-	--hdmi: entity work.hdmi
-	--generic map (
-	--	FREQ		=> 25200000,	-- pixel clock frequency 
-	--	FS		=> 48000,		-- audio sample rate - should be 32000, 41000 or 48000 = 48KHz
-	--	CTS		=> 25200,		-- CTS = Freq(pixclk) * N / (128 * Fs)
-	--	N		=> 6144			-- N = 128 * Fs /1000,  128 * Fs /1500 <= N <= 128 * Fs /300 (Check HDMI spec 7.2 for details)
-	--) 
-	--port map (
-	--	I_CLK_PIXEL			=> clock_vga_s,
-	--	I_R				=> vga_r_s & vga_r_s,
-	--	I_G				=> vga_g_s & vga_g_s,
-	--	I_B				=> vga_b_s & vga_b_s,
-	--	I_BLANK			=> vga_blank_s,
-	--	I_HSYNC			=> vga_hsync_n_s,
-	--	I_VSYNC			=> vga_vsync_n_s,
-	--	-- PCM audio
-	--	I_AUDIO_ENABLE	=> '1',
-	--	I_AUDIO_PCM_L 	=> sound_hdmi_l_s,
-	--	I_AUDIO_PCM_R	=> sound_hdmi_r_s,
-	--	-- TMDS parallel pixel synchronous outputs (serialize LSB first)
-	--	O_RED				=> tdms_r_s,
-	--	O_GREEN			=> tdms_g_s,
-	--	O_BLUE				=> tdms_b_s
-	--);
-
-	--hdmio: entity work.hdmi_out_altera
-	--port map (
-	--	clock_pixel_i			=> clock_vga_s,
-	--	clock_tdms_i			=> clock_dvi_s,
-	--	red_i				=> tdms_r_s,
-	--	green_i			=> tdms_g_s,
-	--	blue_i				=> tdms_b_s,
-	--	tmds_out_p			=> tdms_p_s,
-	--	tmds_out_n			=> tdms_n_s
-	--);
-
-	--tmds_o(7)	<= tdms_p_s(2);	-- 2+		
-	--tmds_o(6)	<= tdms_n_s(2);	-- 2-		
-	--tmds_o(5)	<= tdms_p_s(1);	-- 1+			
-	--tmds_o(4)	<= tdms_n_s(1);	-- 1-		
-	--tmds_o(3)	<= tdms_p_s(0);	-- 0+		
-	--tmds_o(2)	<= tdms_n_s(0);	-- 0-	
-	--tmds_o(1)	<= tdms_p_s(3);	-- CLK+	
-	--tmds_o(0)	<= tdms_n_s(3);	-- CLK-	
 
 
 	vga_r_o			<= vga_r_s(3 downto 1);

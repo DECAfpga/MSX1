@@ -1,115 +1,52 @@
-# MSX1FPGA
-MSX1 cloned in FPGA
+# MSX1FPGA - DECA port 
 
-This project is an MSX1 cloned in FPGA, with some parts of the OCM project.
+DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 port by Fabio Belavenuto  (MSX1 FPGA project   https://github.com/fbelavenuto/msx1fpga ).
 
-Specifications:
+**Features:**
 
-- Multiple boards;
-- MSX1 50Hz or 60Hz;
-- RAM Mapper size configurable, depends on the board;
-- 128K Nextor (MSX-DOS2 evolution) ROM with SD driver;
-- Megaram SCC/SCC+ from OCM project (size configurable, depends on the board);
-- Keyboard map reconfigurable;
-- Simple switched I/O ports (no software yet);
-- 15/31KHz configurable.
-- Scanlines configurable.
-- HDMI output on some boards.
+* HDMI video output (640x480@60)
+  * VGA video output is available through GPIO
+* Line out, HDMI audio output
+  * PWM audio is possible through GPIO
 
-In the project there is a loader (IPL) to boot and load ROMs and configuration from SD card.
+**Additional hardware required**:
 
-The "CONFIG.TXT" configuration file is self-explanatory.
+- SDRAM module. Tested with 32 MB SDRAM board for MiSTer (extra slim) XS_2.2 ([see connections](https://github.com/SoCFPGA-learning/DECA/tree/main/Projects/sdram_mister_deca)).
+- PS/2 Keyboard connected to GPIO. See connections below
 
-## Use instructions
+**Versions**:
 
-Format an SD Card in FAT16 (max 4GB), unzip the file 'msx1_sd_files.zip' in the root directory from SD Card.
+- current version: 1.0
+- see changelog in top level file /synth/DECA/msx_deca.vhd
 
-Some keys and their functions:
+**Compiling:**
 
- - Print Screen: Toggle VGA mode;
- - Scroll Lock: Toggle Scanlines mode;
- - Pause/Break: Toggle 50/60 Hz Vertical frequency
- - F11: Toggle Turbo mode;
- - CTRL+ALT+DEL: Soft Reset;
- - CTRL+ALT+F12: Hard Reset;
- - CTRL+ALT+BACKSPACE: For ZX-Uno based boards only: reload FPGA;
- - Left ALT: MSX GRAPH key;
- - Right ALT: MSX CODE key;
- - Page Up: MSX SELECT key;
- - END: MSX STOP key.
- 
-The joystick port for Multicore Boards are mapped as JoyMega, and configured to use a SEGA Genesis/Megadrive joypad. Other boards are mapped as single joystick/joypad with 2 buttons.
+* Load project  in /synth/DECA/msx_deca.qpf
 
-To go to the BASIC from the MSX-DOS you must execute the BASIC command.
+* sof file already included in /synth/DECA/output_files/msx_deca.sof
 
-To go to MSX-DOS from BASIC, CALL SYSTEM must be executed.
+  
 
+**Keyboard connections:**
 
-NOTES:
+* It is needed to connect PS2 keyboard to GPIO P9 connector (next to HDMI connector):
+  * P9:11 PS2CLK 
+  * P9:12 PS2DAT 
 
-- In BASIC use the "CTRL + STOP" keys to stop the execution of a program. The MSX STOP key is mapped to the END key of the PC.
-- To change the video mode by switching between 50HZ and 60HZ, and thus play at correct speed to PAL games, such as "Invasion of the Zombie Monsters", through the VGA output, you can use the program "DISPLAY.COM", which is to download in this thread (https://www.msx.org/forum/msx-talk/software/dos-tool-to-switch-from-50-to-60hz).
+**Others:**
+
+* Button KEY0 & KEY1 are reset buttons
+
+### STATUS
+
+* Working
+
+* HDMI video not tested on many monitors. Might not work on all.
 
 
-## SOFTWARE LOADING:
-
-### A.- .ROM files
-
-They are dumps of programs in cartridges.
-
-Uses the SROM.COM utility to load the ROMs file. Ex: SROM NEMESIS1.ROM
-
-### B.- .DSK files
-
-They are dumps of programs in disketes.
-
-Uses the SRI.COM utility to emulate a disk. Ex: SRI GAME.DSK
-
-### C.- .CAS files
-
-They are images with the content of the audio tapes. The way to use them is very well explained in the article Load CAS files with MegaFlashROM and an MSX-2 (hhttps://programbytes48k.wordpress.com/2015/11/19/cargar-archivos-cas-con-megaflashrom-y-un-msx-2/).
-
-The **LOADCAX** and **LOADCAXX** files are located in the BIN folder on the diskette http://www.msxcartridgeshop.com/bin/ROMDISK.DSK of the MegaFlashROM SCC+ SD.
-
-### D.- .BAS files
-
-They are programs in BASIC that we can record in the SD, and also load them to execute them. From inside the BASIC we can type:
-
-```
-SAVE "A:HOLA.BAS"
-```
-
-to save the program, and with
-
-```
-LOAD "A:HOLA.BAS"
-```
-
-we recover it.
-
-To know the differences between CSAVE, BSAVE and SAVE, or other commands to store and retrieve the information, you can consult this section (https://www.msx.org/wiki/Category:Disk_BASIC) with the Disk BASIC commands of the wiki from msx.org (https://www.msx.org/wiki/).
-
-To load a .BAS file from Nextor-DOS, simply write its name with or without extension and press ENTER.
 
 
-### E.- AUDIO IN
+### Keyboard Controls & original README files
 
-The core allows the loading of programs by audio. The way to do it is from BASIC with the commands:
-
-```
-RUN”CAS:”
-```
-or well:
-```
-BLOAD”CAS:”,R
-```
-or well:
-```
-LOAD”CAS:”,R
-```
-
-Do not forget to disable TURBO to load a real K7 audio.
-
-It is perfectly explained in the article How to load programs in MSX (https://programbytes48k.wordpress.com/2012/01/04/como-cargar-programas-en-msx/).
-
-In the (http://www.vintagenarios.com/hilo-oficial-wavs-msx-t1997.html) forum of **Vintagenarios** you can find many MSX programs in WAV format that can be loaded by audio.
+* English        [README.EN.md](README.EN.md)
+* Castellano  [README.ES.md](README.ES.md)

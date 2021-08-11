@@ -1,5 +1,14 @@
 -------------------------------------------------------------------------------
 --
+-- DECA top level by Somhic & Shaeon & Rampa (11/08/21) 
+-- 
+-- adapted from Multicore2 port by Fabio Belavenuto  (MSX1 FPGA project https://github.com/fbelavenuto/msx1fpga ).
+--
+-- v1.0 initial release
+--
+--
+-------------------------------------------------------------------------------
+--
 -- MSX1 FPGA project     https://github.com/fbelavenuto/msx1fpga
 --
 -- Copyright (c) 2016, Fabio Belavenuto (belavenuto@gmail.com)
@@ -53,6 +62,9 @@ entity msx_deca is
 
 		-- Buttons
 		btn_n_i				: in    std_logic_vector(4 downto 1);
+
+		-- Leds
+		leds_n_o			: out    std_logic_vector(4 downto 1);
 
 		-- SDRAM	(32MB)
 		sdram_clk_o			: out   std_logic								:= '0';
@@ -192,7 +204,7 @@ architecture behavior of msx_deca is
 	signal audio_r_amp_s		: unsigned(15 downto 0);
 	signal volumes_s		: volumes_t;
 
-	-- sound_hdmi
+	-- sound_i2s
 	signal sound_i2s_l_s	: std_logic_vector(15 downto 0);
 	signal sound_i2s_r_s	: std_logic_vector(15 downto 0);
 
@@ -291,6 +303,8 @@ component I2C_HDMI_Config
   );
 end component;
 
+--signal clock_hdmi		: std_logic;
+
 component AUDIO_SPI_CTL_RD
     port (
     iRESET_n : in std_logic;
@@ -337,19 +351,20 @@ begin
 	-- PLL1
 	pll: entity work.pll1
 	port map (
-		inclk0	=> clock_50_i,
+		inclk0		=> clock_50_i,
 		c0			=> clock_master_s,		-- 21.477 MHz				[21.484]
 		c1			=> clock_sdram_s,		-- 85.908 MHz (4x master)	[85.937]
-		--c2			=> sdram_clk_o,			-- 85.908 MHz -90°
-		locked	=> pll_locked_s
+		--c2		=> sdram_clk_o,			-- 85.908 MHz -90°
+		locked		=> pll_locked_s
 	);
 
 	-- PLL2
 	pll2: entity work.pll2
 	port map (
-		inclk0	=> clock_50_i,
-		c0			=> clock_vga_s			--  25.200
-		--c1		=> clock_dvi_s			-- 126.000
+		inclk0		=> clock_50_i,
+		c0			=> clock_vga_s		--  25.200
+		--c1		=> clock_hdmi,		-- 	50.400
+		--locked	=> open
 	);
 
 	-- Clocks
@@ -462,7 +477,7 @@ begin
 		joy2_btn2_i		=> '1',
 		joy2_btn2_o		=> open,
 		joy2_out_o		=> joy2_out_s,
-
+		-- -- Original code for joysticks
 		-- joy1_up_i		=> joy1_up_i,
 		-- joy1_down_i		=> joy1_down_i,
 		-- joy1_left_i		=> joy1_left_i,
@@ -624,8 +639,8 @@ begin
 	-- Glue logic
 
 	-- Resets
-	btn_por_n_s		<= btn_n_i(2); -- or btn_n_i(4);
-	btn_reset_n_s	<= btn_n_i(1); -- or btn_n_i(4);
+	btn_por_n_s		<= btn_n_i(2); 
+	btn_reset_n_s	<= btn_n_i(1); 
 
 	por_s		<= '1'	when pll_locked_s = '0' or soft_por_s = '1' or btn_por_n_s = '0'		else '0';
 	reset_s		<= '1'	when soft_rst_cnt_s = X"01"                 or btn_reset_n_s = '0'		else '0';
@@ -828,23 +843,23 @@ begin
 		i2s_d_o => i2s_D
 	);
 
-	-- HDMI CONFIG    -- mod by somhic
+	-- HDMI CONFIG    
 	I2C_HDMI_Config_inst : I2C_HDMI_Config
 	port map (
 		iCLK => clock_50_i,
-		iRST_N => reset_s,
+		iRST_N =>  btn_n_i(1),      -- por_s, reset_s does not initilize hdmi at bootup
 		I2C_SCLK => HDMI_I2C_SCL,
 		I2C_SDAT => HDMI_I2C_SDA,
 		HDMI_TX_INT => HDMI_TX_INT
 	);
 
 	--  HDMI VIDEO   
-	HDMI_TX_CLK <= clock_vga_s;		
+	HDMI_TX_CLK <= clock_vga_s;		--OK  clock_hdmi 50.4 
 	-- KO LG/BENQ	clock_master_s  21.477 MHz;    --clock_vga_s  25.2 MHz
 	HDMI_TX_DE <= not vga_blank_s;
 	HDMI_TX_HS <= vga_hsync_n_s;
 	HDMI_TX_VS <= vga_vsync_n_s;
-	HDMI_TX_D <= vga_r_s&"0000"&vga_g_s&"0000"&vga_b_s&"0000";
+	HDMI_TX_D <= vga_r_s&vga_r_s&vga_g_s&vga_g_s&vga_b_s&vga_b_s;
 
 	--  HDMI AUDIO   
 	HDMI_MCLK <= i2s_Mck;
@@ -854,7 +869,6 @@ begin
 
 	-- DECA AUDIO CODEC
 	RESET_DELAY_n <= not reset_s;
-
 	-- Audio DAC DECA Output assignments
 	AUDIO_GPIO_MFP5  <= '1';  -- GPIO
 	AUDIO_SPI_SELECT <= '1';  -- SPI mode
@@ -900,9 +914,9 @@ begin
 --	);
 
 	-- DEBUG
---	leds_n_o(0)		<= not turbo_on_s;
---	leds_n_o(1)		<= not caps_en_s;
---	leds_n_o(2)		<= not soft_reset_k_s;
---	leds_n_o(3)		<= not soft_por_s;
+	leds_n_o(1)		<= not turbo_on_s;
+	leds_n_o(2)		<= not caps_en_s;
+	leds_n_o(3)		<= not soft_reset_k_s;
+	leds_n_o(4)		<= not soft_por_s;
 
 end architecture;

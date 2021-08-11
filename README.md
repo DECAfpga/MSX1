@@ -7,7 +7,8 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 * HDMI video output (640x480@60)
   * VGA video output is available through GPIO
 * Line out, HDMI audio output
-  * PWM audio is possible through GPIO
+  * PWM audio is available through GPIO
+* Joystick 1 available through GPIO  
 
 **Additional hardware required**:
 
@@ -16,7 +17,7 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 
 **Versions**:
 
-- current version: 1.0
+- current version: 1.1
 - see changelog in top level file /synth/DECA/msx_deca.vhd
 
 **Compiling:**
@@ -32,6 +33,16 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 * It is needed to connect PS2 keyboard to GPIO P9 connector (next to HDMI connector):
   * P9:11 PS2CLK 
   * P9:12 PS2DAT 
+
+**Joystick connections:**
+
+- P9:42 -to joy1_p9_i
+  P9:30 -to joy1_p6_i
+  P9:28 -to joy1_up_i
+  P9:31 -to joy1_down_i
+  P9:29 -to joy1_left_i
+  P9:27 -to joy1_right_i
+  P9:41 - to joyX_p7_o (select pin)
 
 **Others:**
 

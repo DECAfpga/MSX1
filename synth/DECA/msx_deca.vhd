@@ -5,7 +5,7 @@
 -- adapted from Multicore2 port by Fabio Belavenuto  (MSX1 FPGA project https://github.com/fbelavenuto/msx1fpga ).
 --
 -- v1.0 initial release
---
+-- v1.1 added joystick 1 functionality
 --
 -------------------------------------------------------------------------------
 --
@@ -81,8 +81,8 @@ entity msx_deca is
 		-- PS2
 		ps2_clk_io			: inout std_logic								:= 'Z';
 		ps2_data_io			: inout std_logic								:= 'Z';
-		ps2_mouse_clk_io  		: inout std_logic								:= 'Z';
-		ps2_mouse_data_io 		: inout std_logic								:= 'Z';
+		ps2_mouse_clk_io  	: inout std_logic								:= 'Z';
+		ps2_mouse_data_io 	: inout std_logic								:= 'Z';
 
 		-- SD Card
 		sd_cs_n_o			: out   std_logic								:= '1';
@@ -113,7 +113,7 @@ entity msx_deca is
 		dac_l_o				: out   std_logic								:= '0';
 		dac_r_o				: out   std_logic								:= '0';
 		ear_i				: in    std_logic;
-		mic_o				: out   std_logic								:= '0';
+		--mic_o				: out   std_logic								:= '0';
 
 		-- VGA
 		vga_r_o			: out   std_logic_vector(2 downto 0)	:= (others => '0');
@@ -456,37 +456,19 @@ begin
 		volumes_o		=> volumes_s,
 		-- K7
 		k7_motor_o		=> open,
-		k7_audio_o		=> mic_o,
+		k7_audio_o		=> open,    --mic_o
 		k7_audio_i		=> ear_i,
 		-- Joystick
-		joy1_up_i		=> '1',
-		joy1_down_i		=> '1',
-		joy1_left_i		=> '1',
-		joy1_right_i	=> '1',
-		joy1_btn1_i		=> '1',
+		joy1_up_i		=> joy1_up_i,
+		joy1_down_i		=> joy1_down_i,
+		joy1_left_i		=> joy1_left_i,
+		joy1_right_i	=> joy1_right_i,
+		joy1_btn1_i		=> joy1_p6_i,
 		joy1_btn1_o		=> open,
-		joy1_btn2_i		=> '1',
+		joy1_btn2_i		=> joy1_p9_i,
 		joy1_btn2_o		=> open,
 		joy1_out_o		=> joy1_out_s,
-		joy2_up_i		=> '1',
-		joy2_down_i		=> '1',
-		joy2_left_i		=> '1',
-		joy2_right_i	=> '1',
-		joy2_btn1_i		=> '1',
-		joy2_btn1_o		=> open,
-		joy2_btn2_i		=> '1',
-		joy2_btn2_o		=> open,
-		joy2_out_o		=> joy2_out_s,
-		-- -- Original code for joysticks
-		-- joy1_up_i		=> joy1_up_i,
-		-- joy1_down_i		=> joy1_down_i,
-		-- joy1_left_i		=> joy1_left_i,
-		-- joy1_right_i	=> joy1_right_i,
-		-- joy1_btn1_i		=> joy1_p6_i,
-		-- joy1_btn1_o		=> open,
-		-- joy1_btn2_i		=> joy1_p9_i,
-		-- joy1_btn2_o		=> open,
-		-- joy1_out_o		=> joy1_out_s,
+		-- -- Original code for joystick 2
 		-- joy2_up_i		=> joy2_up_i,
 		-- joy2_down_i		=> joy2_down_i,
 		-- joy2_left_i		=> joy2_left_i,
@@ -496,6 +478,16 @@ begin
 		-- joy2_btn2_i		=> joy2_p9_i,
 		-- joy2_btn2_o		=> open,
 		-- joy2_out_o		=> joy2_out_s,
+		joy2_up_i		=> '1',
+		joy2_down_i		=> '1',
+		joy2_left_i		=> '1',
+		joy2_right_i	=> '1',
+		joy2_btn1_i		=> '1',
+		joy2_btn1_o		=> open,
+		joy2_btn2_i		=> '1',
+		joy2_btn2_o		=> open,
+		joy2_out_o		=> joy2_out_s,
+
 
 		-- Video
 		cnt_hor_o		=> cnt_hor_s,

@@ -100,12 +100,13 @@ set_location_assignment PIN_AA20 -to sdram_da_io[0]
 set_location_assignment PIN_W13 -to sdram_dqm_o[1]
 set_location_assignment PIN_Y11 -to sdram_dqm_o[0]
 
-set_location_assignment PIN_W12 -to sdram_cas_o
+# CKE not connected on XS 2.2/2.4.
 set_location_assignment PIN_AA16 -to sdram_cke_o
 set_location_assignment PIN_AA14 -to sdram_clk_o
-set_location_assignment PIN_V12 -to sdram_cs_o
+set_location_assignment PIN_W12 -to sdram_cas_o
 set_location_assignment PIN_W11 -to sdram_ras_o
 set_location_assignment PIN_AB10 -to sdram_we_o
+set_location_assignment PIN_V12 -to sdram_cs_o
 
 set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to sdram_da_io[0]
 set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to sdram_da_io[1]
@@ -199,6 +200,8 @@ set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ps2_mouse_clk_io
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ps2_mouse_data_io
 
 # Joysticks
+#Lo de los Joyticks os funcionará si lo poneis a uno porque lleva lógica negativa.
+#Pines Joy van configurados en la FPGA con pull-up así que 1 es no pulsado y 0 es pulsado
 #set_location_assignment PIN_M8 -to joyX_p7_o
 #set_location_assignment PIN_N8 -to joy1_up_i
 #set_location_assignment PIN_M7 -to joy1_down_i
@@ -215,6 +218,7 @@ set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ps2_mouse_data_io
 
 # Audio (GPIO1_D18/19)
 set_location_assignment PIN_H4 -to ear_i
+#set_location_assignment PIN_Y19 -to mic_o
 set_location_assignment PIN_R9 -to dac_l_o
 set_location_assignment PIN_W4 -to dac_r_o
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to dac_l_o
@@ -248,6 +252,110 @@ set_location_assignment PIN_R20 -to sd_cs_n_o
 set_instance_assignment -name IO_STANDARD "1.5 V" -to sd_cs_n_o
 set_location_assignment PIN_P13 -to SD_SEL
 #set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SD_SEL
+
+
+# Audio CODEC TLV320AIC3254
+set_location_assignment PIN_R14 -to i2sSck
+set_instance_assignment -name IO_STANDARD "1.5 V" -to i2sSck
+set_location_assignment PIN_P15 -to i2sD
+set_instance_assignment -name IO_STANDARD "1.5 V" -to i2sD
+set_location_assignment PIN_M22 -to AUDIO_GPIO_MFP5
+set_instance_assignment -name IO_STANDARD "1.5 V" -to AUDIO_GPIO_MFP5
+set_location_assignment PIN_P14 -to i2sMck
+set_instance_assignment -name IO_STANDARD "1.5 V" -to i2sMck
+set_location_assignment PIN_N21 -to AUDIO_MISO_MFP4
+set_instance_assignment -name IO_STANDARD "1.5 V" -to AUDIO_MISO_MFP4
+set_location_assignment PIN_M21 -to AUDIO_RESET_n
+set_instance_assignment -name IO_STANDARD "1.5 V" -to AUDIO_RESET_n
+set_location_assignment PIN_P19 -to AUDIO_SCLK_MFP3
+set_instance_assignment -name IO_STANDARD "1.5 V" -to AUDIO_SCLK_MFP3
+set_location_assignment PIN_P20 -to AUDIO_SCL_SS_n
+set_instance_assignment -name IO_STANDARD "1.5 V" -to AUDIO_SCL_SS_n
+set_location_assignment PIN_P21 -to AUDIO_SDA_MOSI
+set_instance_assignment -name IO_STANDARD "1.5 V" -to AUDIO_SDA_MOSI
+set_location_assignment PIN_N22 -to AUDIO_SPI_SELECT
+set_instance_assignment -name IO_STANDARD "1.5 V" -to AUDIO_SPI_SELECT
+set_location_assignment PIN_R15 -to i2sLr
+set_instance_assignment -name IO_STANDARD "1.5 V" -to i2sLr
+
+
+# HDMI-TX
+set_location_assignment PIN_C10 -to HDMI_I2C_SCL
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_I2C_SCL
+set_location_assignment PIN_B15 -to HDMI_I2C_SDA
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_I2C_SDA
+set_location_assignment PIN_A9 -to HDMI_I2S[0]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_I2S[0]
+set_location_assignment PIN_A11 -to HDMI_I2S[1]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_I2S[1]
+set_location_assignment PIN_A8 -to HDMI_I2S[2]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_I2S[2]
+set_location_assignment PIN_B8 -to HDMI_I2S[3]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_I2S[3]
+set_location_assignment PIN_A10 -to HDMI_LRCLK
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_LRCLK
+set_location_assignment PIN_A7 -to HDMI_MCLK
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_MCLK
+set_location_assignment PIN_D12 -to HDMI_SCLK
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_SCLK
+set_location_assignment PIN_A20 -to HDMI_TX_CLK
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_CLK
+set_location_assignment PIN_C18 -to HDMI_TX_D[0]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[0]
+set_location_assignment PIN_D17 -to HDMI_TX_D[1]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[1]
+set_location_assignment PIN_C17 -to HDMI_TX_D[2]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[2]
+set_location_assignment PIN_C19 -to HDMI_TX_D[3]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[3]
+set_location_assignment PIN_D14 -to HDMI_TX_D[4]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[4]
+set_location_assignment PIN_B19 -to HDMI_TX_D[5]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[5]
+set_location_assignment PIN_D13 -to HDMI_TX_D[6]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[6]
+set_location_assignment PIN_A19 -to HDMI_TX_D[7]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[7]
+set_location_assignment PIN_C14 -to HDMI_TX_D[8]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[8]
+set_location_assignment PIN_A17 -to HDMI_TX_D[9]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[9]
+set_location_assignment PIN_B16 -to HDMI_TX_D[10]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[10]
+set_location_assignment PIN_C15 -to HDMI_TX_D[11]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[11]
+set_location_assignment PIN_A14 -to HDMI_TX_D[12]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[12]
+set_location_assignment PIN_A15 -to HDMI_TX_D[13]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[13]
+set_location_assignment PIN_A12 -to HDMI_TX_D[14]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[14]
+set_location_assignment PIN_A16 -to HDMI_TX_D[15]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[15]
+set_location_assignment PIN_A13 -to HDMI_TX_D[16]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[16]
+set_location_assignment PIN_C16 -to HDMI_TX_D[17]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[17]
+set_location_assignment PIN_C12 -to HDMI_TX_D[18]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[18]
+set_location_assignment PIN_B17 -to HDMI_TX_D[19]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[19]
+set_location_assignment PIN_B12 -to HDMI_TX_D[20]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[20]
+set_location_assignment PIN_B14 -to HDMI_TX_D[21]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[21]
+set_location_assignment PIN_A18 -to HDMI_TX_D[22]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[22]
+set_location_assignment PIN_C13 -to HDMI_TX_D[23]
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_D[23]
+set_location_assignment PIN_C9 -to HDMI_TX_DE
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_DE
+set_location_assignment PIN_B11 -to HDMI_TX_HS
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_HS
+set_location_assignment PIN_B10 -to HDMI_TX_INT
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_INT
+set_location_assignment PIN_C11 -to HDMI_TX_VS
+set_instance_assignment -name IO_STANDARD "1.8 V" -to HDMI_TX_VS
 
 
 #####
@@ -350,6 +458,13 @@ set_global_assignment -name VHDL_FILE ../../src/audio/vm2413/AttackTableMul.vhd
 set_global_assignment -name VHDL_FILE ../../src/audio/vm2413/attacktable.vhd
 
 set_global_assignment -name SYSTEMVERILOG_FILE ../../src/ram/sdram_nes.sv
+
+#set_global_assignment -name QIP_FILE rtl_deca/pll/pll.qip
+set_global_assignment -name VERILOG_FILE rtl_deca/audio/AUDIO_SPI_CTL_RD.v
+set_global_assignment -name VERILOG_FILE rtl_deca/audio/SPI_RAM.v
+set_global_assignment -name VHDL_FILE rtl_deca/audio/i2s_transmitter.vhd
+set_global_assignment -name VERILOG_FILE rtl_deca/hdmi/I2C_Controller.v
+set_global_assignment -name VERILOG_FILE rtl_deca/hdmi/I2C_HDMI_Config.v
 
 ######
 

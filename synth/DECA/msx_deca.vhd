@@ -108,8 +108,34 @@ entity msx_deca is
 		vga_g_o			: out   std_logic_vector(2 downto 0)	:= (others => '0');
 		vga_b_o			: out   std_logic_vector(2 downto 0)	:= (others => '0');
 		vga_hsync_n_o	: out   std_logic								:= '1';
-		vga_vsync_n_o	: out   std_logic								:= '1'
+		vga_vsync_n_o	: out   std_logic								:= '1';
 
+		-- HDMI-TX  DECA 
+		HDMI_I2C_SCL  : inout std_logic; 		          		
+		HDMI_I2C_SDA  : inout std_logic; 		          		
+		HDMI_I2S      : inout std_logic_vector(3 downto 0);		     	
+		HDMI_LRCLK    : inout std_logic; 		          		
+		HDMI_MCLK     : inout std_logic;		          		
+		HDMI_SCLK     : inout std_logic; 		          		
+		HDMI_TX_CLK   : out	std_logic;	          		
+		HDMI_TX_D     : out	std_logic_vector(23 downto 0);	    		
+		HDMI_TX_DE    : out std_logic;		          		 
+		HDMI_TX_HS    : out	std_logic;	          		
+		HDMI_TX_INT   : in  std_logic;		          		
+		HDMI_TX_VS    : out std_logic;         
+
+		-- AUDIO CODEC  DECA 
+		AUDIO_GPIO_MFP5 : inout std_logic;
+		AUDIO_MISO_MFP4 : in std_logic;
+		AUDIO_RESET_n :  inout std_logic;
+		AUDIO_SCLK_MFP3 : out std_logic;
+		AUDIO_SCL_SS_n : out std_logic;
+		AUDIO_SDA_MOSI : inout std_logic;
+		AUDIO_SPI_SELECT : out std_logic;
+		i2sMck : out std_logic;
+		i2sSck : out std_logic;
+		i2sLr : out std_logic;
+		i2sD : out std_logic
 
 	);
 end entity;
@@ -167,8 +193,8 @@ architecture behavior of msx_deca is
 	signal volumes_s		: volumes_t;
 
 	-- sound_hdmi
-	signal sound_hdmi_l_s	: std_logic_vector(15 downto 0);
-	signal sound_hdmi_r_s	: std_logic_vector(15 downto 0);
+	signal sound_i2s_l_s	: std_logic_vector(15 downto 0);
+	signal sound_i2s_r_s	: std_logic_vector(15 downto 0);
 
 	-- Video
 	signal rgb_col_s		: std_logic_vector( 3 downto 0);
@@ -254,6 +280,50 @@ component sdram
   );
 end component;
 
+
+component I2C_HDMI_Config
+    port (
+    iCLK : in std_logic;
+    iRST_N : in std_logic;
+    I2C_SCLK : out std_logic;
+    I2C_SDAT : inout std_logic;
+    HDMI_TX_INT : in std_logic
+  );
+end component;
+
+component AUDIO_SPI_CTL_RD
+    port (
+    iRESET_n : in std_logic;
+    iCLK_50 : in std_logic;
+    oCS_n : out std_logic;
+    oSCLK : out std_logic;
+    oDIN : out std_logic;
+    iDOUT : in std_logic
+  );
+end component;
+
+signal RESET_DELAY_n     : std_logic;   
+
+component i2s_transmitter
+  generic (
+    sample_rate : positive
+  );
+    port (
+    clock_i : in std_logic;
+    reset_i : in std_logic;
+    pcm_l_i : in std_logic_vector(15 downto 0);
+    pcm_r_i : in std_logic_vector(15 downto 0);
+    i2s_mclk_o : out std_logic;
+    i2s_lrclk_o : out std_logic;
+    i2s_bclk_o : out std_logic;
+    i2s_d_o : out std_logic
+  );
+end component;
+
+signal i2s_Mck     : std_logic;   
+signal i2s_Sck     : std_logic;   
+signal i2s_Lr     : std_logic;   
+signal i2s_D     : std_logic;   
 
 
 begin
@@ -679,12 +749,6 @@ begin
 		end if;
 	end process;
 
-
-	sound_hdmi_l_s <= '0' & std_logic_vector(audio_l_amp_s(15 downto 1));
-	sound_hdmi_r_s <= '0' & std_logic_vector(audio_r_amp_s(15 downto 1));
-
-
-
 	vga_r_o			<= vga_r_s(3 downto 1);
 	vga_g_o			<= vga_g_s(3 downto 1);
 	vga_b_o			<= vga_b_s(3 downto 1);
@@ -743,6 +807,76 @@ begin
 		melody_o		=> opll_mo_s,
 		rythm_o		=> opll_ro_s
 	);
+
+
+	-- I2S interface audio
+	sound_i2s_l_s <= '0' & std_logic_vector(audio_l_amp_s(15 downto 1));
+	sound_i2s_r_s <= '0' & std_logic_vector(audio_r_amp_s(15 downto 1));
+
+	i2s_transmitter_inst : i2s_transmitter
+	generic map (
+		sample_rate => 48000
+	)
+	port map (
+		clock_i => clock_50_i,
+		reset_i => reset_s,
+		pcm_l_i => sound_i2s_l_s,
+		pcm_r_i => sound_i2s_r_s,
+		i2s_mclk_o => i2s_Mck,
+		i2s_lrclk_o => i2s_Lr,
+		i2s_bclk_o => i2s_Sck,
+		i2s_d_o => i2s_D
+	);
+
+	-- HDMI CONFIG    -- mod by somhic
+	I2C_HDMI_Config_inst : I2C_HDMI_Config
+	port map (
+		iCLK => clock_50_i,
+		iRST_N => reset_s,
+		I2C_SCLK => HDMI_I2C_SCL,
+		I2C_SDAT => HDMI_I2C_SDA,
+		HDMI_TX_INT => HDMI_TX_INT
+	);
+
+	--  HDMI VIDEO   
+	HDMI_TX_CLK <= clock_vga_s;		
+	-- KO LG/BENQ	clock_master_s  21.477 MHz;    --clock_vga_s  25.2 MHz
+	HDMI_TX_DE <= not vga_blank_s;
+	HDMI_TX_HS <= vga_hsync_n_s;
+	HDMI_TX_VS <= vga_vsync_n_s;
+	HDMI_TX_D <= vga_r_s&"0000"&vga_g_s&"0000"&vga_b_s&"0000";
+
+	--  HDMI AUDIO   
+	HDMI_MCLK <= i2s_Mck;
+	HDMI_SCLK <= i2s_Sck;    -- lr*2*16
+	HDMI_LRCLK <= i2s_Lr;   
+	HDMI_I2S(0) <= i2s_D;
+
+	-- DECA AUDIO CODEC
+	RESET_DELAY_n <= not reset_s;
+
+	-- Audio DAC DECA Output assignments
+	AUDIO_GPIO_MFP5  <= '1';  -- GPIO
+	AUDIO_SPI_SELECT <= '1';  -- SPI mode
+	AUDIO_RESET_n    <= RESET_DELAY_n;    
+
+	-- DECA AUDIO CODEC SPI CONFIG
+	AUDIO_SPI_CTL_RD_inst : AUDIO_SPI_CTL_RD
+	port map (
+		iRESET_n => RESET_DELAY_n,
+		iCLK_50 => clock_50_i,
+		oCS_n => AUDIO_SCL_SS_n,
+		oSCLK => AUDIO_SCLK_MFP3,
+		oDIN => AUDIO_SDA_MOSI,
+		iDOUT => AUDIO_MISO_MFP4
+	);
+
+	-- AUDIO CODEC
+	i2sMck <= i2s_Mck;
+	i2sSck <= i2s_Sck;    -- lr*2*16
+	i2sLr <= i2s_Lr;   
+	i2sD <= i2s_D;
+
 
 		-- MIDI
 --	midi_cs_n_s	<= '0' when bus_addr_s(7 downto 1) = "0111111" and bus_iorq_n_s = '0' and bus_m1_n_s = '1'	else '1';	-- 0x7E - 0x7F

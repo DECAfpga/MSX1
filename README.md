@@ -5,10 +5,11 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 **Features:**
 
 * HDMI video output (640x480@60)
-  * VGA video output is available through GPIO
+* VGA video output is available through GPIO
 * Line out, HDMI audio output
-  * PWM audio is available through GPIO
-* Joystick 1 available through GPIO  
+* PWM audio is available through GPIO
+* Joystick 1 available through GPIO .  **Joystick power pin must be 2.5 V**. 
+  * **DANGER: Connecting power pin above 2.6 V may damage the FPGA**
 
 **Additional hardware required**:
 
@@ -17,7 +18,7 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 
 **Versions**:
 
-- current version: 1.1
+- current version: 1.2
 - see changelog in top level file /synth/DECA/msx_deca.vhd
 
 **Compiling:**
@@ -28,21 +29,9 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 
   
 
-**Keyboard connections:**
+**Pinout connections:**
 
-* It is needed to connect PS2 keyboard to GPIO P9 connector (next to HDMI connector):
-  * P9:11 PS2CLK 
-  * P9:12 PS2DAT 
-
-**Joystick connections:**
-
-- P9:42 -to joy1_p9_i
-  P9:30 -to joy1_p6_i
-  P9:28 -to joy1_up_i
-  P9:31 -to joy1_down_i
-  P9:29 -to joy1_left_i
-  P9:27 -to joy1_right_i
-  P9:41 - to joyX_p7_o (select pin)
+![pinout_deca](pinout_deca.png)
 
 **Others:**
 
@@ -50,14 +39,14 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 
 ### STATUS
 
-* Working
+* Working fine
 
-* HDMI video not tested on many monitors. Might not work on all.
-
-
+* HDMI video outputs special resolution so will not work on all monitors. 
 
 
-### Keyboard Controls & original README files
+
+
+### Keyboard Controls & original README files:
 
 * English        [README.EN.md](README.EN.md)
 * Castellano  [README.ES.md](README.ES.md)

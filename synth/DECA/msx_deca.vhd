@@ -6,6 +6,7 @@
 --
 -- v1.0 initial release
 -- v1.1 added joystick 1 functionality
+-- v1.2 qsf & pin locations revised, changed pinout of joystick, audio level to maximum, pinout added
 --
 -------------------------------------------------------------------------------
 --
@@ -817,8 +818,9 @@ begin
 
 
 	-- I2S interface audio
-	sound_i2s_l_s <= '0' & std_logic_vector(audio_l_amp_s(15 downto 1));
-	sound_i2s_r_s <= '0' & std_logic_vector(audio_r_amp_s(15 downto 1));
+	
+	--sound_i2s_l_s <= '0' & std_logic_vector(audio_l_amp_s(15 downto 1));
+	--sound_i2s_r_s <= '0' & std_logic_vector(audio_r_amp_s(15 downto 1));
 
 	i2s_transmitter_inst : i2s_transmitter
 	generic map (
@@ -827,8 +829,10 @@ begin
 	port map (
 		clock_i => clock_50_i,
 		reset_i => reset_s,
-		pcm_l_i => sound_i2s_l_s,
-		pcm_r_i => sound_i2s_r_s,
+		--pcm_l_i => sound_i2s_l_s,
+		--pcm_r_i => sound_i2s_r_s,
+		pcm_l_i => std_logic_vector(audio_l_amp_s),
+		pcm_r_i => std_logic_vector(audio_r_amp_s),
 		i2s_mclk_o => i2s_Mck,
 		i2s_lrclk_o => i2s_Lr,
 		i2s_bclk_o => i2s_Sck,

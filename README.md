@@ -5,16 +5,17 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 **Features:**
 
 * HDMI video output (640x480@60)
-* VGA video output is available through GPIO
-* Line out, HDMI audio output
-* PWM audio is available through GPIO
-* Joystick 1 available through GPIO .  **Joystick power pin must be 2.5 V**. 
+* VGA video output is available through GPIO (see pinout below)
+* Line out (3.5 jack green connector) and HDMI audio output
+* PWM audio is available through GPIO (see pinout below)
+* Joystick available through GPIO  (see pinout below).  **Joystick power pin must be 2.5 V**
   * **DANGER: Connecting power pin above 2.6 V may damage the FPGA**
+  * This core is prepared for Megadrive 6 button gamepads as it outputs a permanent high level on pin 7 of DB9
 
 **Additional hardware required**:
 
-- SDRAM module. Tested with 32 MB SDRAM board for MiSTer (extra slim) XS_2.2 ([see connections](https://github.com/SoCFPGA-learning/DECA/tree/main/Projects/sdram_mister_deca)).
-- PS/2 Keyboard connected to GPIO. See connections below
+- SDRAM module. Tested with 32 MB SDRAM board for MiSTer (extra slim) XS_2.2 ([see connections](https://github.com/SoCFPGA-learning/DECA/tree/main/Projects/sdram_mister_deca))
+- PS/2 Keyboard connected to GPIO  (see pinout below)
 
 **Versions**:
 
@@ -23,9 +24,9 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 
 **Compiling:**
 
-* Load project  in /synth/DECA/msx_deca.qpf
+* Load project from /synth/DECA/msx_deca.qpf
 
-* sof file already included in /synth/DECA/output_files/msx_deca.sof
+* sof/svf files already included in /synth/DECA/output_files/
 
   
 

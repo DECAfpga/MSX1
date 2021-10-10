@@ -5,7 +5,7 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 **Features:**
 
 * HDMI video output (640x480@60)
-* VGA video output is available through GPIO (see pinout below)
+* VGA video output is available through GPIO (see pinout below). Tested with PS2 & R2R VGA adapter (333)  https://www.waveshare.com/vga-ps2-board.htm
 * Line out (3.5 jack green connector) and HDMI audio output
 * PWM audio is available through GPIO (see pinout below)
 * Joystick available through GPIO  (see pinout below).  **Joystick power pin must be 2.5 V**

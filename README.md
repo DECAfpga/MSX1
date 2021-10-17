@@ -19,7 +19,7 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 
 **Versions**:
 
-- current version: 1.2
+- current version: 1.3
 - see changelog in top level file /synth/DECA/msx_deca.vhd
 
 **Compiling:**

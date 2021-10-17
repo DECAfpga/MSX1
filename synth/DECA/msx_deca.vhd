@@ -7,6 +7,7 @@
 -- v1.0 initial release
 -- v1.1 added joystick 1 functionality
 -- v1.2 qsf & pin locations revised, changed pinout of joystick, audio level to maximum, pinout added
+-- v1.3 VGA444 pinout 
 --
 -------------------------------------------------------------------------------
 --
@@ -117,9 +118,9 @@ entity msx_deca is
 		--mic_o				: out   std_logic								:= '0';
 
 		-- VGA
-		vga_r_o			: out   std_logic_vector(2 downto 0)	:= (others => '0');
-		vga_g_o			: out   std_logic_vector(2 downto 0)	:= (others => '0');
-		vga_b_o			: out   std_logic_vector(2 downto 0)	:= (others => '0');
+		vga_r_o			: out   std_logic_vector(3 downto 0)	:= (others => '0');
+		vga_g_o			: out   std_logic_vector(3 downto 0)	:= (others => '0');
+		vga_b_o			: out   std_logic_vector(3 downto 0)	:= (others => '0');
 		vga_hsync_n_o	: out   std_logic								:= '1';
 		vga_vsync_n_o	: out   std_logic								:= '1';
 
@@ -757,9 +758,9 @@ begin
 		end if;
 	end process;
 
-	vga_r_o			<= vga_r_s(3 downto 1);
-	vga_g_o			<= vga_g_s(3 downto 1);
-	vga_b_o			<= vga_b_s(3 downto 1);
+	vga_r_o			<= vga_r_s;
+	vga_g_o			<= vga_g_s;
+	vga_b_o			<= vga_b_s;
 	vga_hsync_n_o	<= vga_hsync_n_s;
 	vga_vsync_n_o	<= vga_vsync_n_s;
 

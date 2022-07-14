@@ -2,13 +2,14 @@
 
 DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 port by Fabio Belavenuto  (MSX1 FPGA project   https://github.com/fbelavenuto/msx1fpga ).
 
+**Now compatible with [Deca Retro Cape 2](https://github.com/somhi/DECA_retro_cape_2)** (new location for 3 pins of old SDRAM modules). Otherwise see pinout below to connect everything through GPIOs.
+
 **Features:**
 
 * HDMI video output (640x480@60)
 * VGA 444 video output is available through GPIO (see pinout below). 
-  * Tested with PS2 & R2R VGA adapter (333)  https://www.waveshare.com/vga-ps2-board.htm
 * Line out (3.5 jack green connector) and HDMI audio output
-* PWM audio is available through GPIO (see pinout below)
+* PWM audio is available through GPIO 
 * Joystick available through GPIO  (see pinout below).  **Joystick power pin must be 2.5 V**
   * **DANGER: Connecting power pin above 2.6 V may damage the FPGA**
   * This core is prepared for Megadrive 6 button gamepads as it outputs a permanent high level on pin 7 of DB9
@@ -34,6 +35,8 @@ DECA top level by Somhic & Shaeon & Rampa (11/08/21) adapted from Multicore2 por
 **Pinout connections:**
 
 ![pinout_deca](pinout_deca.png)
+
+MIDI and UART pins are not used in this core.
 
 **Others:**
 
